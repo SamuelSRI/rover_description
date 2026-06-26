@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<robot name="tracked_rover">
+
+  <!-- Repère principal du rover -->
+  <link name="base_link"/>
+
+  <!-- Lidar -->
+  <!-- AS-DT1 à l'avant du rover -->
+  <link name="as_dt1_link"/>
+
+  <joint name="base_to_as_dt1" type="fixed">
+    <parent link="base_link"/>
+    <child link="as_dt1_link"/>
+    <origin xyz="0.57 0.00 0.45" rpy="0 1.57079632679 0"/>
+  </joint>
+
+  <!-- IMU -->
+  <link name="imu_link"/>
+
+  <joint name="base_to_imu" type="fixed">
+  <parent link="base_link"/>
+  <child link="imu_link"/>
+  <!-- x avant, y gauche, z haut -->
+  <origin xyz="0.16 0.06 0.33" rpy="0 0 0"/>
+  </joint>
+
+  <!-- GPS -->
+  <link name="gps_link"/>
+
+  <joint name="base_to_gps" type="fixed">
+  <parent link="base_link"/>
+  <child link="gps_link"/>
+  <!-- x avant, y gauche, z haut -->
+  <origin xyz="0.50 0.26 0.44" rpy="0 0 0"/>
+  </joint>
+
+</robot>
