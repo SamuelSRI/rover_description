@@ -2,11 +2,50 @@
 <robot name="tracked_rover">
 
   <!-- Repère principal du rover -->
-  <link name="base_link"/>
+  <link name="base_link">
 
-  <!-- Lidar -->
-  <!-- AS-DT1 à l'avant du rover -->
-  <link name="as_dt1_link"/>
+    <!-- Corps du rover : 1.18 m x 0.80 m x 0.44 m -->
+    <visual>
+      <origin xyz="0 0 0.22" rpy="0 0 0"/>
+      <geometry>
+        <box size="1.18 0.80 0.44"/>
+      </geometry>
+      <material name="rover_body_gray">
+        <color rgba="0.35 0.35 0.35 1.0"/>
+      </material>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 0.22" rpy="0 0 0"/>
+      <geometry>
+        <box size="1.18 0.80 0.44"/>
+      </geometry>
+    </collision>
+
+  </link>
+
+  <!-- Lidar AS-DT1 -->
+  <link name="as_dt1_link">
+
+    <!-- Volume visible du lidar : cube 3 cm x 3 cm x 3 cm -->
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.03 0.03 0.03"/>
+      </geometry>
+      <material name="lidar_black">
+        <color rgba="0.02 0.02 0.02 1.0"/>
+      </material>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.03 0.03 0.03"/>
+      </geometry>
+    </collision>
+
+  </link>
 
   <joint name="base_to_as_dt1" type="fixed">
     <parent link="base_link"/>
@@ -18,20 +57,40 @@
   <link name="imu_link"/>
 
   <joint name="base_to_imu" type="fixed">
-  <parent link="base_link"/>
-  <child link="imu_link"/>
-  <!-- x avant, y gauche, z haut -->
-  <origin xyz="0.16 0.06 0.33" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <child link="imu_link"/>
+    <!-- x avant, y gauche, z haut -->
+    <origin xyz="0.16 0.06 0.33" rpy="0 0 0"/>
   </joint>
 
   <!-- GPS -->
-  <link name="gps_link"/>
+  <link name="gps_link">
+
+    <!-- Volume visible du GPS : disque diamètre 8 cm, hauteur 2 cm -->
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.04" length="0.02"/>
+      </geometry>
+      <material name="gps_blue">
+        <color rgba="0.0 0.2 0.9 1.0"/>
+      </material>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.04" length="0.02"/>
+      </geometry>
+    </collision>
+
+  </link>
 
   <joint name="base_to_gps" type="fixed">
-  <parent link="base_link"/>
-  <child link="gps_link"/>
-  <!-- x avant, y gauche, z haut -->
-  <origin xyz="0.50 0.26 0.44" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <child link="gps_link"/>
+    <!-- x avant, y gauche, z haut -->
+    <origin xyz="0.50 0.26 0.44" rpy="0 0 0"/>
   </joint>
 
 </robot>
