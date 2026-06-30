@@ -1,0 +1,390 @@
+<?xml version="1.0"?>
+<robot name="tracked_rover" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- ========================= -->
+  <!-- Paramètres radar          -->
+  <!-- ========================= -->
+
+  <!-- Centre de la plateforme circulaire dans base_link -->
+  <xacro:property name="platform_center_x" value="-0.19"/>
+  <xacro:property name="platform_center_y" value="0.0"/>
+
+  <!-- Plateforme : centre z = 0.45, épaisseur 0.02, donc dessus à z = 0.46 -->
+  <xacro:property name="platform_top_z" value="0.46"/>
+
+  <!-- Cercle des radars : diamètre 68 cm -->
+  <xacro:property name="radar_ring_radius" value="0.34"/>
+
+  <!-- Centre radar : 10 cm au-dessus du dessus de la plateforme -->
+  <xacro:property name="radar_center_z" value="0.56"/>
+
+  <!-- Dimensions radar : profondeur x, largeur y, hauteur z -->
+  <xacro:property name="radar_depth" value="0.04"/>
+  <xacro:property name="radar_width" value="0.09"/>
+  <xacro:property name="radar_height" value="0.13"/>
+
+  <!-- Inclinaison des radars : 30 degrés vers l'arrière / vers le haut -->
+  <xacro:property name="radar_pitch" value="-0.523599"/>
+
+
+  <!-- ========================= -->
+  <!-- Macro module radar        -->
+  <!-- ========================= -->
+
+  <xacro:macro name="radar_module" params="name angle">
+
+    <link name="${name}">
+
+      <!-- Corps du radar -->
+      <!-- x = profondeur 4 cm, y = largeur 9 cm, z = hauteur 13 cm -->
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="${radar_depth} ${radar_width} ${radar_height}"/>
+        </geometry>
+        <material name="radar_orange">
+          <color rgba="1.0 0.35 0.0 1.0"/>
+        </material>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="${radar_depth} ${radar_width} ${radar_height}"/>
+        </geometry>
+      </collision>
+
+      <!-- Face rouge côté +X pour visualiser le sens de détection -->
+      <visual>
+        <origin xyz="0.022 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="0.004 ${radar_width} ${radar_height}"/>
+        </geometry>
+        <material name="radar_front_red">
+          <color rgba="0.9 0.0 0.0 1.0"/>
+        </material>
+      </visual>
+
+    </link>
+
+    <joint name="base_to_${name}" type="fixed">
+      <parent link="base_link"/>
+      <child link="${name}"/>
+      <origin
+        xyz="${platform_center_x + radar_ring_radius * cos(angle)} ${platform_center_y + radar_ring_radius * sin(angle)} ${radar_center_z}"
+        rpy="0 ${radar_pitch} ${angle}"/>
+    </joint>
+
+  </xacro:macro>
+
+
+  <!-- Repère principal du rover -->
+  <link name="base_link">
+
+    <!-- Corps supérieur du rover : 1.18 m x 0.80 m x 0.10 m -->
+    <!-- Le toit reste à z = 0.44 -->
+    <visual>
+      <origin xyz="0 0 0.39" rpy="0 0 0"/>
+      <geometry>
+        <box size="1.18 0.80 0.10"/>
+      </geometry>
+      <material name="rover_body_gray">
+        <color rgba="0.35 0.35 0.35 1.0"/>
+      </material>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 0.39" rpy="0 0 0"/>
+      <geometry>
+        <box size="1.18 0.80 0.10"/>
+      </geometry>
+    </collision>
+
+
+    <!-- Chenille gauche : partie centrale -->
+    <visual>
+      <origin xyz="0 0.31 0.16" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.78 0.18 0.24"/>
+      </geometry>
+      <material name="track_black">
+        <color rgba="0.02 0.02 0.02 1.0"/>
+      </material>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0.31 0.16" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.78 0.18 0.24"/>
+      </geometry>
+    </collision>
+
+
+    <!-- Chenille gauche : chanfrein avant -->
+    <visual>
+      <origin xyz="0.49 0.31 0.18" rpy="0 -0.55 0"/>
+      <geometry>
+        <box size="0.24 0.18 0.10"/>
+      </geometry>
+      <material name="track_chamfer_dark">
+        <color rgba="0.08 0.08 0.08 1.0"/>
+      </material>
+    </visual>
+
+    <collision>
+      <origin xyz="0.49 0.31 0.18" rpy="0 -0.55 0"/>
+      <geometry>
+        <box size="0.24 0.18 0.10"/>
+      </geometry>
+    </collision>
+
+
+    <!-- Chenille gauche : chanfrein arrière -->
+    <visual>
+      <origin xyz="-0.49 0.31 0.18" rpy="0 0.55 0"/>
+      <geometry>
+        <box size="0.24 0.18 0.10"/>
+      </geometry>
+      <material name="track_chamfer_dark">
+        <color rgba="0.08 0.08 0.08 1.0"/>
+      </material>
+    </visual>
+
+    <collision>
+      <origin xyz="-0.49 0.31 0.18" rpy="0 0.55 0"/>
+      <geometry>
+        <box size="0.24 0.18 0.10"/>
+      </geometry>
+    </collision>
+
+
+    <!-- Chenille droite : partie centrale -->
+    <visual>
+      <origin xyz="0 -0.31 0.16" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.78 0.18 0.24"/>
+      </geometry>
+      <material name="track_black">
+        <color rgba="0.02 0.02 0.02 1.0"/>
+      </material>
+    </visual>
+
+    <collision>
+      <origin xyz="0 -0.31 0.16" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.78 0.18 0.24"/>
+      </geometry>
+    </collision>
+
+
+    <!-- Chenille droite : chanfrein avant -->
+    <visual>
+      <origin xyz="0.49 -0.31 0.18" rpy="0 -0.55 0"/>
+      <geometry>
+        <box size="0.24 0.18 0.10"/>
+      </geometry>
+      <material name="track_chamfer_dark">
+        <color rgba="0.08 0.08 0.08 1.0"/>
+      </material>
+    </visual>
+
+    <collision>
+      <origin xyz="0.49 -0.31 0.18" rpy="0 -0.55 0"/>
+      <geometry>
+        <box size="0.24 0.18 0.10"/>
+      </geometry>
+    </collision>
+
+
+    <!-- Chenille droite : chanfrein arrière -->
+    <visual>
+      <origin xyz="-0.49 -0.31 0.18" rpy="0 0.55 0"/>
+      <geometry>
+        <box size="0.24 0.18 0.10"/>
+      </geometry>
+      <material name="track_chamfer_dark">
+        <color rgba="0.08 0.08 0.08 1.0"/>
+      </material>
+    </visual>
+
+    <collision>
+      <origin xyz="-0.49 -0.31 0.18" rpy="0 0.55 0"/>
+      <geometry>
+        <box size="0.24 0.18 0.10"/>
+      </geometry>
+    </collision>
+
+
+    <!-- Partie centrale basse entre les chenilles -->
+    <visual>
+      <origin xyz="-0.075 0 0.22" rpy="0 0 0"/>
+      <geometry>
+        <box size="1.03 0.44 0.24"/>
+      </geometry>
+      <material name="center_body_gray">
+        <color rgba="0.25 0.25 0.25 1.0"/>
+      </material>
+    </visual>
+
+    <collision>
+      <origin xyz="-0.075 0 0.22" rpy="0 0 0"/>
+      <geometry>
+        <box size="1.03 0.44 0.24"/>
+      </geometry>
+    </collision>
+
+
+    <!-- Approximation du chanfrein avant central du corps -->
+    <visual>
+      <origin xyz="0.515 0 0.285" rpy="0 -0.785398 0"/>
+      <geometry>
+        <box size="0.21 0.44 0.04"/>
+      </geometry>
+      <material name="front_chamfer_gray">
+        <color rgba="0.22 0.22 0.22 1.0"/>
+      </material>
+    </visual>
+
+    <collision>
+      <origin xyz="0.515 0 0.285" rpy="0 -0.785398 0"/>
+      <geometry>
+        <box size="0.21 0.44 0.04"/>
+      </geometry>
+    </collision>
+
+
+    <!-- Plateforme circulaire arrière : diamètre 80 cm, épaisseur 2 cm -->
+    <!-- Bord arrière aligné avec l'arrière du rover -->
+    <visual>
+      <origin xyz="-0.19 0 0.45" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.40" length="0.02"/>
+      </geometry>
+      <material name="rear_platform_blue">
+        <color rgba="0.0 0.15 0.55 1.0"/>
+      </material>
+    </visual>
+
+    <collision>
+      <origin xyz="-0.19 0 0.45" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.40" length="0.02"/>
+      </geometry>
+    </collision>
+
+  </link>
+
+
+  <!-- ========================= -->
+  <!-- 20 modules radar ARS5     -->
+  <!-- ========================= -->
+  <!--
+    Convention :
+    - angle 0 rad = avant du rover, axe +X
+    - angle positif = vers la gauche du rover
+    - radar_117_link est perpendiculaire à l'avant du rover
+    - en tournant vers la droite : 118, 119, 120...
+    - en tournant vers la gauche : 116, 115, 114...
+  -->
+
+  <!-- Avant du rover -->
+  <xacro:radar_module name="radar_117_link" angle="0.000000"/>
+
+  <!-- Côté gauche du rover : IDs décroissants -->
+  <xacro:radar_module name="radar_116_link" angle="0.314159"/>
+  <xacro:radar_module name="radar_115_link" angle="0.628319"/>
+  <xacro:radar_module name="radar_114_link" angle="0.942478"/>
+  <xacro:radar_module name="radar_113_link" angle="1.256637"/>
+  <xacro:radar_module name="radar_112_link" angle="1.570796"/>
+  <xacro:radar_module name="radar_111_link" angle="1.884956"/>
+  <xacro:radar_module name="radar_110_link" angle="2.199115"/>
+
+  <!-- Arrière gauche / arrière -->
+  <xacro:radar_module name="radar_129_link" angle="2.513274"/>
+  <xacro:radar_module name="radar_128_link" angle="2.827433"/>
+  <xacro:radar_module name="radar_127_link" angle="3.141593"/>
+
+  <!-- Arrière droit / côté droit : IDs décroissants jusqu'à 118 -->
+  <xacro:radar_module name="radar_126_link" angle="3.455752"/>
+  <xacro:radar_module name="radar_125_link" angle="3.769911"/>
+  <xacro:radar_module name="radar_124_link" angle="4.084070"/>
+  <xacro:radar_module name="radar_123_link" angle="4.398230"/>
+  <xacro:radar_module name="radar_122_link" angle="4.712389"/>
+  <xacro:radar_module name="radar_121_link" angle="5.026548"/>
+  <xacro:radar_module name="radar_120_link" angle="5.340708"/>
+  <xacro:radar_module name="radar_119_link" angle="5.654867"/>
+  <xacro:radar_module name="radar_118_link" angle="5.969026"/>
+
+
+  <!-- Lidar AS-DT1 -->
+  <link name="as_dt1_link">
+
+    <!-- Volume visible du lidar : cube 3 cm x 3 cm x 3 cm -->
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.03 0.03 0.03"/>
+      </geometry>
+      <material name="lidar_black">
+        <color rgba="0.02 0.02 0.02 1.0"/>
+      </material>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.03 0.03 0.03"/>
+      </geometry>
+    </collision>
+
+  </link>
+
+  <joint name="base_to_as_dt1" type="fixed">
+    <parent link="base_link"/>
+    <child link="as_dt1_link"/>
+    <origin xyz="0.57 0.00 0.45" rpy="0 1.57079632679 0"/>
+  </joint>
+
+
+  <!-- IMU -->
+  <link name="imu_link"/>
+
+  <joint name="base_to_imu" type="fixed">
+    <parent link="base_link"/>
+    <child link="imu_link"/>
+    <!-- x avant, y gauche, z haut -->
+    <origin xyz="0.16 0.06 0.33" rpy="0 0 0"/>
+  </joint>
+
+
+  <!-- GPS -->
+  <link name="gps_link">
+
+    <!-- Volume visible du GPS : disque diamètre 8 cm, hauteur 2 cm -->
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.04" length="0.02"/>
+      </geometry>
+      <material name="gps_blue">
+        <color rgba="0.0 0.2 0.9 1.0"/>
+      </material>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.04" length="0.02"/>
+      </geometry>
+    </collision>
+
+  </link>
+
+  <joint name="base_to_gps" type="fixed">
+    <parent link="base_link"/>
+    <child link="gps_link"/>
+    <!-- x avant, y gauche, z haut -->
+    <origin xyz="0.50 0.26 0.44" rpy="0 0 0"/>
+  </joint>
+
+</robot>
