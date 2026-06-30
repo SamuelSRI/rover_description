@@ -132,15 +132,15 @@ base_link
 Recommended package structure:
 
 ```text
-_rover_description
+rover_description
 ├── CMakeLists.txt
 ├── package.xml
 ├── launch
 │ └── display.launch.py
 ├── rviz
-│ └── _rover.rviz
+│ └── rover.rviz
 └── urdf
- └── _rover.urdf.xacro
+ └── rover.urdf.xacro
 ```
 
 ## Dependencies
@@ -171,7 +171,7 @@ Build the workspace:
 
 ```bash
 cd ~/ros2_ws
-colcon build --packages-select _rover_description
+colcon build --packages-select rover_description
 source install/setup.bash
 ```
 
@@ -180,13 +180,13 @@ source install/setup.bash
 To manually generate the URDF file:
 
 ```bash
-ros2 run xacro xacro ~/ros2_ws/src/_rover_description/urdf/_rover.urdf.xacro > /tmp/_rover.urdf
+ros2 run xacro xacro ~/ros2_ws/src/rover_description/urdf/rover.urdf.xacro > /tmp/rover.urdf
 ```
 
 Or, if `xacro` is available directly:
 
 ```bash
-xacro ~/ros2_ws/src/_rover_description/urdf/_rover.urdf.xacro > /tmp/_rover.urdf
+xacro ~/ros2_ws/src/rover_description/urdf/rover.urdf.xacro > /tmp/rover.urdf
 ```
 
 ## Launch robot description
@@ -194,7 +194,7 @@ xacro ~/ros2_ws/src/_rover_description/urdf/_rover.urdf.xacro > /tmp/_rover.urdf
 Example launch command:
 
 ```bash
-ros2 launch _rover_description display.launch.py
+ros2 launch rover_description display.launch.py
 ```
 
 This should start:
@@ -221,12 +221,12 @@ from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
- pkg_share = FindPackageShare("_rover_description")
+ pkg_share = FindPackageShare("rover_description")
 
  xacro_file = PathJoinSubstitution([
  pkg_share,
  "urdf",
- "_rover.urdf.xacro"
+ "rover.urdf.xacro"
  ])
 
  robot_description = {
@@ -267,7 +267,7 @@ Make sure your `CMakeLists.txt` installs the URDF and launch folders:
 
 ```cmake
 cmake_minimum_required(VERSION 3.8)
-project(_rover_description)
+project(rover_description)
 
 find_package(ament_cmake REQUIRED)
 
@@ -288,7 +288,7 @@ Example `package.xml` dependencies:
 ```xml
 <?xml version="1.0"?>
 <package format="3">
- <name>_rover_description</name>
+ <name>rover_description</name>
  <version>0.1.0</version>
  <description>URDF/Xacro robot description for a rover with LiDAR, GPS, IMU and 20 radar modules.</description>
 
